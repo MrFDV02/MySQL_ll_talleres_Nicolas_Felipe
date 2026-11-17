@@ -120,7 +120,7 @@ ORDER BY v.plate;
 
 -- Q-09 · ¿Qué vehículos nos están costando más en el taller?
 WITH gastos AS (
-    SELECT v.id            AS vehicle_id,
+    SELECT v.id            AS vehiculo_id,
            v.plate         AS placa,
            SUM(mt.cost)    AS gasto
     FROM vehicles AS v
@@ -135,7 +135,7 @@ ORDER BY gasto DESC;
 
 -- Segunda consulta: el promedio con el que se comparó
 WITH gastos AS (
-    SELECT v.id         AS vehicle_id,
+    SELECT v.id         AS vehiculo_id,
            v.plate      AS placa,
            SUM(mt.cost) AS gasto
     FROM vehicles AS v
