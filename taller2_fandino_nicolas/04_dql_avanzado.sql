@@ -13,7 +13,7 @@ USE flotaya;
 -- ---------------------------------------------------------------------
 -- fn_prueba_1418 · MySQL exige declarar características en funciones
 -- ---------------------------------------------------------------------
--- ⚠️ ESPERADO: ERROR 1418 (HY000): This function has none of DETERMINISTIC,
+-- ESPERADO: ERROR 1418 (HY000): This function has none of DETERMINISTIC,
 -- NO SQL, or READS SQL DATA in its declaration and binary logging is enabled
 --
 -- DROP FUNCTION IF EXISTS fn_prueba_1418;
@@ -21,7 +21,7 @@ USE flotaya;
 -- CREATE FUNCTION fn_prueba_1418()
 -- RETURNS INT
 -- BEGIN
---     RETURN 1;
+--    RETURN 1;
 -- END $$
 -- DELIMITER ;
 --
@@ -108,10 +108,10 @@ SELECT fn_valor_alquiler(1, '2026-11-27', '2026-12-02') AS economico_diciembre, 
        fn_valor_alquiler(3, '2026-10-08', '2026-10-12') AS suv_receso_octubre,    -- 1080000
        fn_valor_alquiler(6, '2026-12-14', '2026-12-16') AS lujo_con_alza;         -- 1202500
 
--- ⚠️ ESPERADO: ERROR 1644 (45000): La fecha final debe ser posterior a la inicial
+-- ESPERADO: ERROR 1644 (45000): La fecha final debe ser posterior a la inicial
 -- SELECT fn_valor_alquiler(1, '2026-12-05', '2026-12-05');
 
--- ⚠️ ESPERADO: ERROR 1644 (45000): No hay temporada o tarifa para el día 2027-01-16
+-- ESPERADO: ERROR 1644 (45000): No hay temporada o tarifa para el día 2027-01-16
 -- SELECT fn_valor_alquiler(1, '2027-01-14', '2027-01-18');
 
 -- ---------------------------------------------------------------------
@@ -278,7 +278,7 @@ END $$
 
 DELIMITER ;
 
--- Prueba 1 · Jorge Arango, Hilux HLX701, El Poblado → El Poblado, 12-19 a 12-22
+-- Prueba 1 · Jorge Arango, Hilux HLX701, El Poblado -> El Poblado, 12-19 a 12-22
 CALL sp_crear_reserva(7, 14, 3, 3, '2026-12-19', '2026-12-22', @num_reserva);
 SELECT @num_reserva AS reserva_creada;
 
@@ -286,23 +286,23 @@ SELECT id, customer_id, vehicle_id, pickup_date, return_date, quoted_value, stat
 FROM reservations WHERE id = @num_reserva;
 -- Esperado: reserva PENDIENTE cotizada en 1290000.00 (3 noches ALTA de 4x4)
 
--- ⚠️ ESPERADO: ERROR 1644 (45000): El vehículo ya está reservado en esas fechas
+-- ESPERADO: ERROR 1644 (45000): El vehículo ya está reservado en esas fechas
 -- (prueba 2: cruce con la reserva 501 de Juliana Patiño)
 -- CALL sp_crear_reserva(2, 1, 1, 1, '2026-11-30', '2026-12-04', @num_x);
 
--- ⚠️ ESPERADO: ERROR 1644 (45000): El cliente tiene 22 años y la categoría exige 23
+-- ESPERADO: ERROR 1644 (45000): El cliente tiene 22 años y la categoría exige 23
 -- (prueba 3: Juliana Patiño en una SUV)
 -- CALL sp_crear_reserva(3, 13, 4, 4, '2026-12-12', '2026-12-14', @num_x);
 
--- ⚠️ ESPERADO: ERROR 1644 (45000): El cliente no tiene licencia vigente durante todo el alquiler
+-- ESPERADO: ERROR 1644 (45000): El cliente no tiene licencia vigente durante todo el alquiler
 -- (prueba 4: la licencia de Paola Quintero vence el 2026-12-10)
 -- CALL sp_crear_reserva(8, 2, 2, 2, '2026-12-08', '2026-12-12', @num_x);
 
--- ⚠️ ESPERADO: ERROR 1644 (45000): El cliente está bloqueado
+-- ESPERADO: ERROR 1644 (45000): El cliente está bloqueado
 -- (prueba 5: Martha Cifuentes)
 -- CALL sp_crear_reserva(10, 2, 2, 2, '2026-12-01', '2026-12-03', @num_x);
 
--- ⚠️ ESPERADO: ERROR 1644 (45000): El vehículo está fuera de servicio
+-- ESPERADO: ERROR 1644 (45000): El vehículo está fuera de servicio
 -- (prueba 6: KWD103)
 -- CALL sp_crear_reserva(1, 3, 6, 6, '2026-12-01', '2026-12-03', @num_x);
 
@@ -444,11 +444,11 @@ END $$
 
 DELIMITER ;
 
--- ⚠️ ESPERADO: ERROR 1644 (45000): El contrato no está abierto
+-- ESPERADO: ERROR 1644 (45000): El contrato no está abierto
 -- (prueba 1: el contrato 9001 ya está cerrado)
 -- CALL sp_cerrar_contrato(9001, '2026-10-06', @saldo_x);
 
--- ⚠️ ESPERADO: ERROR 1644 (45000): El contrato no tiene devolución registrada
+-- ESPERADO: ERROR 1644 (45000): El contrato no tiene devolución registrada
 -- (prueba 2: Carlos Mejía todavía tiene el carro)
 -- CALL sp_cerrar_contrato(9007, '2026-11-23', @saldo_x);
 
@@ -550,11 +550,11 @@ SHOW GRANTS FOR rol_taller_flotaya;
 -- -- Cotizar
 -- SELECT fn_valor_alquiler(3, '2026-12-12', '2026-12-15') AS cotizacion;
 --
--- -- ⚠️ ESPERADO: ERROR 1142 · SELECT sobre pagos no permitido
+-- -- ESPERADO: ERROR 1142 · SELECT sobre pagos no permitido
 -- SELECT * FROM payments;
--- -- ⚠️ ESPERADO: ERROR 1142 · borrar reservas no permitido
+-- -- ESPERADO: ERROR 1142 · borrar reservas no permitido
 -- DELETE FROM reservations WHERE id = @nueva;
--- -- ⚠️ ESPERADO: ERROR 1142 · licencias no visibles
+-- -- ESPERADO: ERROR 1142 · licencias no visibles
 -- SELECT COUNT(*) FROM driver_licenses;
 --
 -- -- Sin el rol activo, la cuenta ve menos todavía:
@@ -575,11 +575,11 @@ SHOW GRANTS FOR rol_taller_flotaya;
 -- INSERT INTO maintenances (vehicle_id, maintenance_type, description, workshop, start_date, end_date, cost)
 -- VALUES (13, 'PREVENTIVO', 'Alineación y balanceo', 'Taller FlotaYa Bogotá', '2026-11-23', '2026-11-23', 120000);
 --
--- -- ⚠️ ESPERADO: ERROR 1142 · no puede ver todos los datos del vehículo
+-- -- ESPERADO: ERROR 1142 · no puede ver todos los datos del vehículo
 -- SELECT * FROM vehicles;
--- -- ⚠️ ESPERADO: ERROR 1143 · no puede cambiar el kilometraje
+-- -- ESPERADO: ERROR 1143 · no puede cambiar el kilometraje
 -- UPDATE vehicles SET mileage_km = 90000 WHERE id = 15;
--- -- ⚠️ ESPERADO: ERROR 1142 · no ve contratos
+-- -- ESPERADO: ERROR 1142 · no ve contratos
 -- SELECT COUNT(*) FROM contracts;
 --
 -- -- Como auditor_flotaya ------------------------------------------------
@@ -592,34 +592,34 @@ SHOW GRANTS FOR rol_taller_flotaya;
 -- -- Permitido: contar contratos por estado
 -- SELECT status, COUNT(*) FROM contracts GROUP BY status;
 --
--- -- ⚠️ ESPERADO: ERROR 1143 · no ve los últimos 4 dígitos de la tarjeta
+-- -- ESPERADO: ERROR 1143 · no ve los últimos 4 dígitos de la tarjeta
 -- SELECT card_last4 FROM payments;
--- -- ⚠️ ESPERADO: ERROR 1142 · no ve todos los datos de los pagos
+-- -- ESPERADO: ERROR 1142 · no ve todos los datos de los pagos
 -- SELECT * FROM payments;
--- -- ⚠️ ESPERADO: ERROR 1142 · no modifica datos
+-- -- ESPERADO: ERROR 1142 · no modifica datos
 -- UPDATE contracts SET status = 'ABIERTO' WHERE id = 9001;
--- -- ⚠️ ESPERADO: ERROR 1142 · no ve clientes
+-- -- ESPERADO: ERROR 1142 · no ve clientes
 -- SELECT COUNT(*) FROM customers;
 --
 -- =====================================================================
 -- RESPUESTAS
 -- =====================================================================
 -- 1. El asesor creó una reserva que valida licencias sin poder leerlas
---    porque el procedimiento es SQL SECURITY DEFINER: se ejecuta con los
---    privilegios de quien lo creó (root), no con los del asesor. El asesor
---    solo tiene EXECUTE. El riesgo es la escalada de privilegios: si el
---    procedimiento devolviera datos de las licencias o aceptara SQL libre,
---    el asesor vería a través de él lo que la matriz le prohíbe. Por eso el
---    procedimiento solo valida y no muestra nada de licencias.
+--   porque el procedimiento es SQL SECURITY DEFINER: se ejecuta con los
+--   privilegios de quien lo creó (root), no con los del asesor. El asesor
+--   solo tiene EXECUTE. El riesgo es la escalada de privilegios: si el
+--   procedimiento devolviera datos de las licencias o aceptara SQL libre,
+--   el asesor vería a través de él lo que la matriz le prohíbe. Por eso el
+--   procedimiento solo valida y no muestra nada de licencias.
 --
 -- 2. El 1142 niega el privilegio sobre la TABLA: `SELECT *` pide todas las
---    columnas y MySQL lo resuelve como un permiso de tabla, así que la cuenta
---    que solo tiene privilegios por columna no puede usarlo. El 1143 niega
---    una COLUMNA concreta: el auditor puede leer id, contract_id, concept,
---    amount y paid_at de payments, pero al pedir card_last4 tropieza con la
---    columna prohibida. Por eso el mismo tipo de consulta da códigos distintos.
+--   columnas y MySQL lo resuelve como un permiso de tabla, así que la cuenta
+--   que solo tiene privilegios por columna no puede usarlo. El 1143 niega
+--   una COLUMNA concreta: el auditor puede leer id, contract_id, concept,
+--   amount y paid_at de payments, pero al pedir card_last4 tropieza con la
+--   columna prohibida. Por eso el mismo tipo de consulta da códigos distintos.
 --
 -- 3. Si la cuenta tiene el rol asignado pero no activo (sin DEFAULT ROLE o
---    tras SET ROLE NONE), la sesión arranca solo con USAGE: puede conectarse,
---    pero cualquier consulta falla con 1142/1143 como si no tuviera permisos.
---    Los roles se activan por sesión; por eso el script usa SET DEFAULT ROLE.
+--   tras SET ROLE NONE), la sesión arranca solo con USAGE: puede conectarse,
+--   pero cualquier consulta falla con 1142/1143 como si no tuviera permisos.
+--   Los roles se activan por sesión; por eso el script usa SET DEFAULT ROLE.

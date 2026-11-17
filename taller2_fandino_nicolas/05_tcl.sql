@@ -123,7 +123,7 @@ JOIN vehicles AS v ON v.id = ct.vehicle_id
 JOIN deposits AS d ON d.contract_id = ct.id
 WHERE ct.id = 9007;
 
--- ⚠️ ESPERADO: ERROR 1265 (01000): Data truncated for column 'method' at row 1
+-- ESPERADO: ERROR 1265 (01000): Data truncated for column 'method' at row 1
 -- El asesor intenta cobrar el saldo con CHEQUE (FlotaYa no recibe cheques).
 -- Ejecutar sola, con la transacción abierta:
 -- INSERT INTO payments (contract_id, concept, amount, method, paid_at)

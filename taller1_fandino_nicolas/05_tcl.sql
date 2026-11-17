@@ -12,8 +12,8 @@ USE bibliored;
 SELECT id, barcode, status AS estado_antes_de_la_llamada FROM copies WHERE id = 4;
 
 -- ---- Paso 1: SIN transacción ----
--- ⚠️ ESPERADO: ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails
---   (loans.employee_id -> employees.id). El empleado 999 no existe.
+-- ESPERADO: ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails
+--  (loans.employee_id -> employees.id). El empleado 999 no existe.
 -- CALL sp_prestar_ejemplar(4, 12, 999, '2026-11-10', @prestamo);
 
 -- Estado del ejemplar DESPUÉS del error (si ejecutaste la llamada: queda PRESTADO)
@@ -33,7 +33,7 @@ SELECT id, barcode, status AS estado_tras_la_correccion FROM copies WHERE id = 4
 
 -- ---- Paso 2: CON transacción ----
 START TRANSACTION;
--- ⚠️ ESPERADO: ERROR 1452 (23000): igual que en el paso 1
+-- ESPERADO: ERROR 1452 (23000): igual que en el paso 1
 -- CALL sp_prestar_ejemplar(4, 12, 999, '2026-11-10', @prestamo);
 -- Dentro de la transacción (si ejecutaste la llamada: PRESTADO; el UPDATE del ejemplar aún no se confirmó)
 SELECT id, barcode, status AS estado_dentro_de_la_transaccion FROM copies WHERE id = 4;
@@ -79,12 +79,12 @@ DELIMITER ;
 SELECT COUNT(*) AS prestamos_antes, MAX(id) AS ultimo_prestamo_antes FROM loans;
 
 -- Caso 1: el empleado no existe => falla con el error de la base; el ejemplar sigue DISPONIBLE
--- ⚠️ ESPERADO: ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails
+-- ESPERADO: ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails
 -- CALL sp_prestar_ejemplar_tx(4, 12, 999, '2026-11-10', @prestamo);
 SELECT id, barcode, status AS estado_tras_el_caso_1 FROM copies WHERE id = 4;   -- DISPONIBLE
 
 -- Caso 2: el ejemplar 2 está PRESTADO
--- ⚠️ ESPERADO: ERROR 1644 (45000): El ejemplar no está disponible: PRESTADO
+-- ESPERADO: ERROR 1644 (45000): El ejemplar no está disponible: PRESTADO
 -- CALL sp_prestar_ejemplar_tx(2, 12, 2, '2026-11-10', @prestamo);
 
 -- Caso 3: préstamo correcto con un empleado que sí existe (2)

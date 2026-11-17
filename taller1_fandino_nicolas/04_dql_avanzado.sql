@@ -353,7 +353,7 @@ CALL sp_resumen_socio(8, @activos, @saldo);
 SELECT @activos AS prestamos_activos, @saldo AS saldo_pendiente;
 
 -- Prueba 3: socio que no existe
--- ⚠️ ESPERADO: ERROR 1644 (45000): El socio no existe
+-- ESPERADO: ERROR 1644 (45000): El socio no existe
 -- CALL sp_resumen_socio(999, @activos, @saldo);
 
 -- =====================================================================
@@ -367,23 +367,23 @@ SELECT l.id, l.copy_id, l.loaned_on, l.due_on, l.status, c.status AS estado_ejem
 FROM loans l JOIN copies c ON c.id = l.copy_id WHERE l.id = @prestamo;
 
 -- Prueba 2: Óscar (6) está SUSPENDIDO (y además debe una multa): gana la validación 2
--- ⚠️ ESPERADO: ERROR 1644 (45000): El socio no está activo: SUSPENDIDO
+-- ESPERADO: ERROR 1644 (45000): El socio no está activo: SUSPENDIDO
 -- CALL sp_prestar_ejemplar(4, 6, 2, '2026-11-10', @prestamo);
 
 -- Prueba 3: Ricardo (12), activo, pide el ejemplar 2 que está PRESTADO
--- ⚠️ ESPERADO: ERROR 1644 (45000): El ejemplar no está disponible: PRESTADO
+-- ESPERADO: ERROR 1644 (45000): El ejemplar no está disponible: PRESTADO
 -- CALL sp_prestar_ejemplar(2, 12, 2, '2026-11-10', @prestamo);
 
 -- Prueba 4: Marcela (3), activa, con una multa pendiente, pide el ejemplar 13 (DISPONIBLE)
--- ⚠️ ESPERADO: ERROR 1644 (45000): El socio tiene multas pendientes
+-- ESPERADO: ERROR 1644 (45000): El socio tiene multas pendientes
 -- CALL sp_prestar_ejemplar(13, 3, 3, '2026-11-10', @prestamo);
 
 -- Prueba 5: Felipe (8, D7, Básica con 2 activos) pide el ejemplar 13 (DISPONIBLE)
--- ⚠️ ESPERADO: ERROR 1644 (45000): El socio alcanzó su tope de 2 préstamos
+-- ESPERADO: ERROR 1644 (45000): El socio alcanzó su tope de 2 préstamos
 -- CALL sp_prestar_ejemplar(13, 8, 2, '2026-11-10', @prestamo);
 
 -- Prueba 6: Ricardo (12), activo, pide un ejemplar que no existe
--- ⚠️ ESPERADO: ERROR 1644 (45000): El ejemplar no existe
+-- ESPERADO: ERROR 1644 (45000): El ejemplar no existe
 -- CALL sp_prestar_ejemplar(9999, 12, 2, '2026-11-10', @prestamo);
 
 -- =====================================================================
@@ -400,11 +400,11 @@ SELECT @multa AS multa_generada;
 SELECT COUNT(*) AS multas_del_prestamo_1012 FROM fines WHERE loan_id = 1012;
 
 -- Prueba 3: devolver un préstamo ya DEVUELTO (1001)
--- ⚠️ ESPERADO: ERROR 1644 (45000): El préstamo no está activo
+-- ESPERADO: ERROR 1644 (45000): El préstamo no está activo
 -- CALL sp_devolver_ejemplar(1001, '2026-11-10', @multa);
 
 -- Prueba 4: préstamo activo (1018, prestado el 2026-10-15) con devolución anterior
--- ⚠️ ESPERADO: ERROR 1644 (45000): La fecha de devolución es anterior al préstamo
+-- ESPERADO: ERROR 1644 (45000): La fecha de devolución es anterior al préstamo
 -- CALL sp_devolver_ejemplar(1018, '2026-10-01', @multa);
 
 -- =====================================================================
@@ -417,15 +417,15 @@ SELECT @nuevo_vence AS nuevo_vencimiento;
 SELECT * FROM loan_renewals WHERE loan_id = 1017 ORDER BY id;
 
 -- Prueba 2: préstamo 1016 (D8): ya usó sus 2 renovaciones y no está vencido
--- ⚠️ ESPERADO: ERROR 1644 (45000): El préstamo ya usó sus 2 renovaciones
+-- ESPERADO: ERROR 1644 (45000): El préstamo ya usó sus 2 renovaciones
 -- CALL sp_renovar_prestamo(1016, '2026-11-10', @nuevo_vence);
 
 -- Prueba 3: préstamo 1011 (activo y vencido desde 2026-10-26)
--- ⚠️ ESPERADO: ERROR 1644 (45000): El préstamo está vencido: primero debe devolverse
+-- ESPERADO: ERROR 1644 (45000): El préstamo está vencido: primero debe devolverse
 -- CALL sp_renovar_prestamo(1011, '2026-11-10', @nuevo_vence);
 
 -- Prueba 4: préstamo 1015 (D9): título 7 con reserva PENDIENTE de Ricardo
--- ⚠️ ESPERADO: ERROR 1644 (45000): Hay reservas pendientes para este título
+-- ESPERADO: ERROR 1644 (45000): Hay reservas pendientes para este título
 -- CALL sp_renovar_prestamo(1015, '2026-11-10', @nuevo_vence);
 
 -- =====================================================================
@@ -435,7 +435,7 @@ SELECT * FROM loan_renewals WHERE loan_id = 1017 ORDER BY id;
 -- son los que siguen activos de Q-02 (el 1010 ya se devolvió en la prueba de sp_devolver_ejemplar).
 CALL sp_reporte_sedes('2026-11-10');
 -- Prueba 2: la Sede Tabio sale con 0 | 0 | 0 y ocupacion_pct vacía (NULL), sin error de división por cero
---           (aparece en la última fila del reporte anterior).
+--          (aparece en la última fila del reporte anterior).
 
 -- =====================================================================
 -- PRUEBAS · sp_pagar_multa
@@ -454,15 +454,15 @@ CALL sp_pagar_multa(4, 10000.00, 'TARJETA', '2026-11-10', @saldo);
 SELECT @saldo AS saldo_restante;
 
 -- Prueba 4: abonar a una multa PAGADA (la 1)
--- ⚠️ ESPERADO: ERROR 1644 (45000): La multa no está pendiente
+-- ESPERADO: ERROR 1644 (45000): La multa no está pendiente
 -- CALL sp_pagar_multa(1, 100.00, 'EFECTIVO', '2026-11-10', @saldo);
 
 -- Prueba 5: abonar más que el saldo de una multa pendiente (la 3 debe 3.000)
--- ⚠️ ESPERADO: ERROR 1644 (45000): El abono debe ser mayor que 0 y no superar el saldo
+-- ESPERADO: ERROR 1644 (45000): El abono debe ser mayor que 0 y no superar el saldo
 -- CALL sp_pagar_multa(3, 20000.00, 'EFECTIVO', '2026-11-10', @saldo);
 
 -- Prueba 6: pagar con 'CHEQUE' (lo rechaza el ENUM con el error 1265 y el handler lo convierte)
--- ⚠️ ESPERADO: ERROR 1644 (45000): Medio de pago no válido: use EFECTIVO, TARJETA o TRANSFERENCIA
+-- ESPERADO: ERROR 1644 (45000): Medio de pago no válido: use EFECTIVO, TARJETA o TRANSFERENCIA
 -- CALL sp_pagar_multa(3, 1000.00, 'CHEQUE', '2026-11-10', @saldo);
 
 -- =====================================================================

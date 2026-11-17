@@ -287,17 +287,17 @@ SELECT id, name FROM publishers ORDER BY id;   -- quedan 6; Casa del Sur (6) sig
 -- =====================================================================
 
 -- E1 (caso 9): código de barras repetido
--- ⚠️ ESPERADO: ERROR 1062 (23000): Duplicate entry 'BR-0001' for key 'copies.barcode'
+-- ESPERADO: ERROR 1062 (23000): Duplicate entry 'BR-0001' for key 'copies.barcode'
 -- Lo produce el UNIQUE de copies.barcode.
 -- INSERT INTO copies (barcode, acquired_on, title_id, branch_id) VALUES ('BR-0001', '2026-11-01', 1, 1);
 
 -- E2 (caso 12): cuota de $0
--- ⚠️ ESPERADO: ERROR 3819 (HY000): Check constraint 'fine_payments_chk_1' is violated.
+-- ESPERADO: ERROR 3819 (HY000): Check constraint 'fine_payments_chk_1' is violated.
 -- Lo produce el CHECK (amount > 0) de fine_payments.
 -- INSERT INTO fine_payments (fine_id, amount, paid_on, payment_method) VALUES (3, 0, '2026-11-10', 'EFECTIVO');
 
 -- E3 (caso 15): borrar una editorial que tiene títulos
--- ⚠️ ESPERADO: ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails
+-- ESPERADO: ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails
 -- Lo produce la FK titles.publisher_id -> publishers.id (sin CASCADE: regla 22).
 -- DELETE FROM publishers WHERE id = 1;
 

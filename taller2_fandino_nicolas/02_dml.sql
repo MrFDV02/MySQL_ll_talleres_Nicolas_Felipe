@@ -338,6 +338,7 @@ UNION ALL SELECT 'payments',        COUNT(*) FROM payments;
 
 -- Op. 1 · FlotaYa abre en Bucaramanga
 
+INSERT INTO branches (city_id, name, address, phone) VALUES
 (6, 'FlotaYa Bucaramanga Cabecera', 'Carrera 35 # 48-20', '6077001007');
 
 INSERT INTO employees (branch_id, full_name, email, hire_date, role) VALUES
@@ -382,7 +383,7 @@ SELECT c.name AS categoria, r.season_type AS tipo, r.daily_rate AS tarifa_despue
 FROM season_rates AS r
 JOIN categories AS c ON c.id = r.category_id
 WHERE c.name = 'Lujo' AND r.season_type = 'ALTA';
--- Esperado: 650000.00 → 682500.00
+-- Esperado: 650000.00 -> 682500.00
 
 SELECT e.name AS extra, e.daily_price AS precio_lista
 FROM extras AS e WHERE e.name = 'GPS';
@@ -406,7 +407,7 @@ ORDER BY ct.id;
 SELECT id, pickup_date, status FROM reservations
 WHERE status = 'PENDIENTE' AND pickup_date >= '2026-12-01';
 
--- ⚠️ ESPERADO: ERROR 1175 (HY000): You are using safe update mode...
+-- ESPERADO: ERROR 1175 (HY000): You are using safe update mode...
 -- (el WHERE usa columnas sin índice). Ejecutar sola con Safe Updates activo:
 -- UPDATE reservations SET status = 'CONFIRMADA'
 -- WHERE status = 'PENDIENTE' AND pickup_date >= '2026-12-01';
@@ -435,23 +436,23 @@ SELECT c.name AS categoria,
        (SELECT COUNT(*) FROM season_rates WHERE category_id = c.id) AS tarifas
 FROM categories AS c WHERE c.name = 'Económico';
 
--- ⚠️ ESPERADO: ERROR 1451 (23000): Cannot delete or update a parent row:
+-- ESPERADO: ERROR 1451 (23000): Cannot delete or update a parent row:
 -- a foreign key constraint fails. Ejecutar sola:
 -- DELETE FROM categories WHERE name = 'Económico';
 
 -- Op. 5 · Errores provocados (ejecutar cada una SOLA)
 
--- ⚠️ ESPERADO: ERROR 1062 (23000): Duplicate entry 'KWD101' for key 'vehicles.plate'
+-- ESPERADO: ERROR 1062 (23000): Duplicate entry 'KWD101' for key 'vehicles.plate'
 -- (caso 10: dos vehículos con la misma placa)
 -- INSERT INTO vehicles (model_id, plate, model_year, color, mileage_km, branch_id)
 -- VALUES (1, 'KWD101', 2025, 'Negro', 500, 1);
 
--- ⚠️ ESPERADO: ERROR 3819 (HY000): Check constraint 'damages_chk_1' is violated.
+-- ESPERADO: ERROR 3819 (HY000): Check constraint 'damages_chk_1' is violated.
 -- (un costo de daño negativo)
 -- INSERT INTO damages (inspection_id, description, severity, repair_cost, charged_to_customer)
 -- VALUES (2, 'Golpe con costo negativo', 'LEVE', -50000, TRUE);
 
--- ⚠️ ESPERADO: ERROR 1265 (01000): Data truncated for column 'method' at row 1
+-- ESPERADO: ERROR 1265 (01000): Data truncated for column 'method' at row 1
 -- (FlotaYa no recibe cheques, caso 17)
 -- INSERT INTO payments (contract_id, concept, amount, method, paid_at)
 -- VALUES (9007, 'CIERRE', 100000, 'CHEQUE', '2026-11-23 10:00:00');

@@ -40,8 +40,8 @@ erDiagram
     branches ||--o{ vehicle_returns : "devuelve"
 ```
 
-> En Mermaid las relaciones dobles (reservas → sedes, contratos → empleados,
-> inspecciones → empleados) aparecen dos veces con el mismo padre y distinto
+> En Mermaid las relaciones dobles (reservas -> sedes, contratos -> empleados,
+> inspecciones -> empleados) aparecen dos veces con el mismo padre y distinto
 > papel. En el DDL se distinguen con el prefijo de rol:
 > `pickup_branch_id` / `return_branch_id`, `employee_id` en contratos,
 > entregas, devoluciones e inspecciones.
@@ -108,10 +108,10 @@ erDiagram
 
 | Puente | Relación N:M | Atributos propios |
 |---|---|---|
-| `contract_extras` | contratos ↔ extras | `quantity` (≥1) y `agreed_price` (el precio de ese día, inmutable) |
-| `contract_drivers` | contratos ↔ conductores adicionales | ninguno: solo la autorización; `UNIQUE(contract_id, additional_driver_id)` impide repetirlo en el mismo contrato |
+| `contract_extras` | contratos <-> extras | `quantity` (≥1) y `agreed_price` (el precio de ese día, inmutable) |
+| `contract_drivers` | contratos <-> conductores adicionales | ninguno: solo la autorización; `UNIQUE(contract_id, additional_driver_id)` impide repetirlo en el mismo contrato |
 
-`season_rates` también resuelve un N:M "disfrazado": categorías ↔ tipos de
+`season_rates` también resuelve un N:M "disfrazado": categorías <-> tipos de
 temporada, con la tarifa diaria como atributo propio. No es N:M contra
 `seasons` porque el precio depende del **tipo**, no de la temporada concreta:
 10 temporadas × 6 categorías serían 60 filas si se guardara por temporada;
