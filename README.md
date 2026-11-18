@@ -209,30 +209,6 @@ error 1143 al pedir `card_last4`.
 
 ---
 
-## Cómo ejecutar los scripts
-
-Cada carpeta es independiente. Desde la carpeta del taller:
-
-```bash
-mysql -u root -p < 01_ddl.sql
-mysql -u root -p < 02_dml.sql
-mysql -u root -p < 03_dql.sql
-mysql -u root -p < 04_dql_avanzado.sql
-mysql -u root -p < 05_tcl.sql
-```
-
-`01_ddl.sql` empieza con `DROP DATABASE IF EXISTS ...` y `CREATE DATABASE ...`, así que cada
-corrida deja la base desde cero. Si en Ubuntu el `root` de MySQL usa `auth_socket`, la misma
-secuencia funciona con `sudo mysql < archivo`.
-
-Dos advertencias para leer los scripts:
-
-- Las sentencias que **deben** fallar están precedidas por un comentario
-  `-- ESPERADO: ERROR <código>` y se ejecutan solas (Ctrl + Enter sobre la línea). Si se lanza
-  el archivo completo, el cliente se detiene en la primera, por eso van comentadas.
-- Borrar la base no borra usuarios ni roles: `04_dql_avanzado.sql` del Taller 2 se puede
-  ejecutar dos veces seguidas sin fallar.
-
 ## Pruebas realizadas
 
 - Los cinco scripts de cada taller se ejecutaron en orden sobre MySQL 8.0.46 sin detenerse.
